@@ -1,0 +1,90 @@
+#top-down ( divide and conqure/ pure recursive) and bottom-up (dynamic-programming-like)
+import time
+import matplotlib.pyplot as plt
+
+# top-down
+def fibonacci_recursive(n):
+    if n <= 1:
+        return n
+    return fibonacci_recursive(n-1) + fibonacci_recursive(n-2)
+
+# bottom-up
+def fibonacci_bottom_up(n):
+    fib = [0] * (n+1)
+    fib[1] = 1
+    for i in range(2, n+1):
+        fib[i] = fib[i-1] + fib[i-2]
+    return fib[n]
+
+# 執行時間
+def measure_execution_time(func, n):
+    start_time = time.time()
+    result = func(n)
+    end_time = time.time()
+    return result, end_time - start_time
+
+# 儲存計算時間
+recursive_times = []
+bottom_up_times = []
+
+# 計算費波那契數列並計算時間
+for i in range(1, 101):
+    # top-down
+    fib_recursive, time_recursive = measure_execution_time(fibonacci_recursive, i)
+    recursive_times.append(time_recursive)
+
+    # bottom-up
+    fib_bottom_up, time_bottom_up = measure_execution_time(fibonacci_bottom_up, i)
+    bottom_up_times.append(time_bottom_up)
+
+    # 列印結果
+    print(f"F({i}): Recursive - {fib_recursive}, Time - {time_recursive:.6f}s | Bottom-up - {fib_bottom_up}, Time - {time_bottom_up:.6f}s")
+
+# 繪製折線圖
+plt.plot(range(1, 101), recursive_times, label='遞迴方法')
+plt.plot(range(1, 101), bottom_up_times, label='動態規劃方法')
+plt.xlabel('費波那契數列的項數（n）')
+plt.ylabel('執行時間（秒）')
+plt.title('費波那契數列計算方法執行時間比較')
+plt.legend()
+plt.show()
+
+
+
+print('___________________________________________________')
+
+
+
+
+
+#measure the degree of overlapping subproblem
+import time
+import matplotlib.pyplot as plt
+
+# top-down
+def fibonacci_recursive(n, count):
+    if n <= 1:
+        return n
+    if n == 4:
+        count[0] += 1
+    return fibonacci_recursive(n-1, count) + fibonacci_recursive(n-2, count)
+
+# 儲存計算次數
+overlapping_counts = []
+
+# 計算 F(4) 被計算的次數
+for i in range(5, 51):
+    count = [0]
+    fibonacci_recursive(i, count)
+    overlapping_counts.append(count[0])
+
+    # 列印結果
+    print(f"計算 F({i}) 時，F(4) 被計算的次數：{overlapping_counts[-1]}")
+
+# 繪製折線圖
+plt.plot(range(5, 51), overlapping_counts, marker='o')
+plt.xlabel('計算 F(n) 時的 n')
+plt.ylabel('計算 F(4) 的次數')
+plt.title('計算 F(4) 的次數隨 n 變化的趨勢')
+plt.grid(True)
+plt.show()
